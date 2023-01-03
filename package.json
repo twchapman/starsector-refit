@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "node esbuild.production.js",
-    "start": "esbuild src/app.jsx --servedir=www --outdir=www/js --bundle"
+    "start": "esbuild src/app.jsx --servedir=www --outdir=www/js --bundle",
+    "datamine": "node datamine.js"
   },
   "keywords": [],
   "author": "Travis Chapman",
