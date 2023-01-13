@@ -3,5 +3,5 @@ require('esbuild').serve({
 }, {
     entryPoints: ['src/app.jsx'],
     bundle: true,
-    outdir: 'www/js',
+    outdir: 'www/js'
 })
