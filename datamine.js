@@ -41,6 +41,17 @@ const weaponOutput = path.join("data", "weapons.json");
 if (fs.existsSync(weaponOutput)) fs.unlinkSync(weaponOutput);
 
 console.log("| mining weapon data...");
+const weaponCsv = fs.readFileSync(path.join(dataDirPath, "weapons", "weapon_data.csv"), { encoding: "utf-8" });
+const weaponCsvLines = weaponCsv.split('\r\n');
+const weaponCsvFields = weaponCsvLines[0].split(',');
+const weaponCsvData = weaponCsvLines.slice(1).map(line => {
+    const weaponData = {};
+    const values = line.split(',');
+    for (let f = 0; f < weaponCsvFields.length; f++) {
+        weaponData[weaponCsvFields[f]] = values[f];
+    }
+    return weaponData;
+});
 const weaponFields = ["hardpointSprite", "id", "size", "type"];
 const weaponFilters = ["blinker", "rift", "tpc"];
 const weaponList = fs.readdirSync(path.join(dataDirPath, "weapons"));
@@ -53,8 +64,13 @@ const weapons = weaponList.map(weaponFile => {
     const weaponData = JSON.parse(weaponJson);
     const weapon = {};
     weaponFields.forEach(field => weapon[field] = weaponData[field]);
+    const thisWeaponCsvData = weaponCsvData.filter(w => w.id === weaponData.id)[0];
+    weapon.name = thisWeaponCsvData.name;
+    weapon.OPs = thisWeaponCsvData.OPs;
+    weapon.range = thisWeaponCsvData.range;
     return weapon;
 }).filter(w => w);
+
 console.log(`|> wrote ${weapons.length} weapons.`);
 
 fs.writeFileSync(weaponOutput, JSON.stringify(weapons));

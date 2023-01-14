@@ -11,7 +11,7 @@ const WeaponViewContainer = styled.div`
     grid-template-columns: 104px 1fr 104px;
     grid-template-rows: 1fr 1fr;
     grid-template-areas: "icon name ."
-                         "icon rolerange ordinancepoints";
+                         "icon range ordinancepoints";
     background: #000000;
     color: #FFFFFF;
 
@@ -29,8 +29,8 @@ const WeaponViewName = styled.span`
     line-height: 34px;
 `;
 
-const WeaponViewRoleRange = styled.span`
-    grid-area: rolerange;
+const WeaponViewRange = styled.span`
+    grid-area: range;
     color: #E6BD00;
     line-height: 36px;
 `;
@@ -43,18 +43,22 @@ const WeaponViewOrdinancePoints = styled.span`
     padding-right: 6px;
 `;
 
+const WeaponList = styled.div`
+    height: 700px;
+    overflow-y: scroll;
+`
+
 interface WeaponViewProps {
     name: string;
     type: WeaponType;
-    role?: string;
-    range?: number;
-    ordinancePoints?: number;
+    range: number;
+    ordinancePoints: number;
 }
-const WeaponView: FC<WeaponViewProps> = ({ name, role, range, ordinancePoints }) => {
+const WeaponView: FC<WeaponViewProps> = ({ name, range, ordinancePoints }) => {
     return <WeaponViewContainer>
         <WeaponViewIcon></WeaponViewIcon>
         <WeaponViewName>{name}</WeaponViewName>
-        <WeaponViewRoleRange>{role}, {range}</WeaponViewRoleRange>
+        <WeaponViewRange>range: {range}</WeaponViewRange>
         <WeaponViewOrdinancePoints>{ordinancePoints}</WeaponViewOrdinancePoints>
     </WeaponViewContainer>
 };
@@ -72,12 +76,13 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList }) => {
     return (<>
         <WeaponView name="Sabot SRM"
             type={"MISSILE"}
-            role="Anti Shield"
             range={1200}
             ordinancePoints={4} />
         <WeaponFilter onFilterChanged={onFilterChanged} />
-        {weaponList.filter(w => w.type !== "DECORATIVE" && (filterType === "ALL" || w.type === filterType)).map(w => {
-            return <WeaponView key={w.id} name={w.id} type={w.type} />
-        })}
+        <WeaponList>
+            {weaponList.filter(w => w.type !== "DECORATIVE" && (filterType === "ALL" || w.type === filterType)).map(w => {
+                return <WeaponView key={w.id} name={w.name} type={w.type} range={w.range} ordinancePoints={w.OPs} />
+            })}
+        </WeaponList>
     </>)
 };
