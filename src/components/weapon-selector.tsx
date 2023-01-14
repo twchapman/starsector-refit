@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import styled from 'styled-components';
 import { Weapon, WeaponType } from '../Weapon';
 import { WeaponFilter, WeaponFilterType } from './weapon-filter';
+import { WeaponHardpoint } from './weapon-hardpoint';
 
 const WeaponViewContainer = styled.div`
     display: grid;
@@ -20,7 +21,7 @@ const WeaponViewContainer = styled.div`
     }
 `;
 
-const WeaponViewIcon = styled.img`
+const WeaponViewIcon = styled.div`
     grid-area: icon;
 `;
 
@@ -32,7 +33,7 @@ const WeaponViewName = styled.span`
 const WeaponViewRange = styled.span`
     grid-area: range;
     color: #E6BD00;
-    line-height: 36px;
+    line-height: 34px;
 `;
 
 const WeaponViewOrdinancePoints = styled.span`
@@ -50,13 +51,14 @@ const WeaponList = styled.div`
 
 interface WeaponViewProps {
     name: string;
+    hardpointSprite: string;
     type: WeaponType;
     range: number;
     ordinancePoints: number;
 }
-const WeaponView: FC<WeaponViewProps> = ({ name, range, ordinancePoints }) => {
+const WeaponView: FC<WeaponViewProps> = ({ name, hardpointSprite, type, range, ordinancePoints }) => {
     return <WeaponViewContainer>
-        <WeaponViewIcon></WeaponViewIcon>
+        <WeaponViewIcon><WeaponHardpoint sprite={hardpointSprite} type={type} /></WeaponViewIcon>
         <WeaponViewName>{name}</WeaponViewName>
         <WeaponViewRange>range: {range}</WeaponViewRange>
         <WeaponViewOrdinancePoints>{ordinancePoints}</WeaponViewOrdinancePoints>
@@ -75,13 +77,14 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList }) => {
 
     return (<>
         <WeaponView name="Sabot SRM"
+            hardpointSprite=''
             type={"MISSILE"}
             range={1200}
             ordinancePoints={4} />
         <WeaponFilter onFilterChanged={onFilterChanged} />
         <WeaponList>
             {weaponList.filter(w => w.type !== "DECORATIVE" && (filterType === "ALL" || w.type === filterType)).map(w => {
-                return <WeaponView key={w.id} name={w.name} type={w.type} range={w.range} ordinancePoints={w.OPs} />
+                return <WeaponView key={w.id} name={w.name} hardpointSprite={w.hardpointSprite} type={w.type} range={w.range} ordinancePoints={w.OPs} />
             })}
         </WeaponList>
     </>)

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="90.55481px" height="90.509674px" viewBox="0 0 90.55481 90.509674" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path d="M45.2548 0L90.5097 45.2548L45.2549 90.5097L0 45.2549L45.2548 0Z" id="path_1" />
+    <path d="M0.254807 45.15C0.254807 20.2143 20.4691 0 45.4048 0C70.3405 0 90.5548 20.2143 90.5548 45.15C90.5548 70.0857 70.3405 90.3 45.4048 90.3C20.4691 90.3 0.254807 70.0857 0.254807 45.15Z" id="path_2" />
+    <clipPath id="clip_1">
+      <use xlink:href="#path_1" />
+    </clipPath>
+    <clipPath id="clip_2">
+      <use xlink:href="#path_2" />
+    </clipPath>
+  </defs>
+  <g id="Synergy">
+    <g id="Missile-2">
+      <g clip-path="url(#clip_1)">
+        <use xlink:href="#path_1" fill="none" stroke="#18F5C7" stroke-width="8" />
+      </g>
+    </g>
+    <g id="Energy-2">
+      <g clip-path="url(#clip_2)">
+        <use xlink:href="#path_2" fill="none" stroke="#18F5C7" stroke-width="8" />
+      </g>
+    </g>
+  </g>
+</svg>
