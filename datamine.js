@@ -1,13 +1,21 @@
 const fs = require('fs');
 const path = require('path');
 
-const [, , dataDirPath] = process.argv;
+const [, , gameCorePath] = process.argv;
 
 console.log("starting datamining.")
 
-try {
-    fs.mkdirSync("data");
-} catch { }
+const dataDirPath = path.join(gameCorePath, "data");
+
+const tryMakeDir = (path) => {
+    try {
+        fs.mkdirSync(path);
+    } catch { }
+}
+tryMakeDir("data");
+tryMakeDir("graphics");
+tryMakeDir(path.join("graphics", "ships"));
+tryMakeDir(path.join("graphics", "weapons"));
 
 // Utility
 const cleanedJson = (jsonString) => jsonString.replace(/(#.*)/gm, "").replace(/(.+)(,)(\s*})$/gm, "$1$3").replace(/("renderHints":.+)/gm, "").replace(/("textureType":.+)/gm, "").replace(/("pierceSet":.+)/gm, "").replace(/(.+;)/gm, "");
@@ -30,6 +38,9 @@ const ships = shipList.map(shipFile => {
     const ship = {};
     shipFields.forEach(field => ship[field] = shipData[field]);
     if (ship.hullSize === "FIGHTER") return;
+    const actualShipSprite = ship["spriteName"];
+    ship["spriteName"] = ship["spriteName"].replace(/(graphics\/ships\/).+\/(.+\.png)/, "$1$2");
+    fs.copyFileSync(path.join(gameCorePath, actualShipSprite), path.join(__dirname, ship["spriteName"]));
     return ship;
 }).filter(s => s);
 console.log(`|> wrote ${ships.length} ships.`);
@@ -53,7 +64,7 @@ const weaponCsvData = weaponCsvLines.slice(1).map(line => {
     return weaponData;
 });
 const weaponFields = ["hardpointSprite", "id", "size", "type"];
-const weaponFilters = ["blinker", "rift", "tpc"];
+const weaponFilters = ["blinker", "cryo", "interdictor", "lights", "rift", "tpc"];
 const weaponList = fs.readdirSync(path.join(dataDirPath, "weapons"));
 const weapons = weaponList.map(weaponFile => {
     if (!weaponFile.endsWith(".wpn")) return;
@@ -68,6 +79,9 @@ const weapons = weaponList.map(weaponFile => {
     weapon.name = thisWeaponCsvData.name;
     weapon.OPs = thisWeaponCsvData.OPs;
     weapon.range = thisWeaponCsvData.range;
+    const actualWeaponSprite = weapon["hardpointSprite"];
+    weapon["hardpointSprite"] = weapon["hardpointSprite"].replace(/(graphics\/weapons\/)(?:.*\/)?(.+\.png)/, "$1$2");
+    fs.copyFileSync(path.join(gameCorePath, actualWeaponSprite), path.join(__dirname, weapon["hardpointSprite"]));
     return weapon;
 }).filter(w => w);
 
