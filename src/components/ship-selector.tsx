@@ -12,8 +12,9 @@ const ShipList = styled.div`
 
 interface ShipSelectorProps {
     shipList: Ship[];
+    onShipSelected: (ship: Ship) => void;
 }
-export const ShipSelector: FC<ShipSelectorProps> = ({ shipList }) => {
+export const ShipSelector: FC<ShipSelectorProps> = ({ shipList, onShipSelected }) => {
     const [selectedShip, setSelectedShip] = useState(shipList[0]);
     const [shiplistOpen, setShiplistOpen] = useState(false);
 
@@ -23,6 +24,7 @@ export const ShipSelector: FC<ShipSelectorProps> = ({ shipList }) => {
 
     const handleShipSelected = (ship: Ship) => {
         setSelectedShip(ship);
+        onShipSelected(ship);
         setShiplistOpen(false);
     }
 

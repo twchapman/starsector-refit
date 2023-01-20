@@ -4,16 +4,25 @@ import { ShipSelector } from './components/ship-selector';
 import { WeaponSelector } from './components/weapon-selector';
 
 // temporary
-import ships from '../data/ships.json';
+import shipJson from '../data/ships.json';
 import { Ship } from './Ship';
 
-import weapons from '../data/weapons.json';
+import weaponJson from '../data/weapons.json';
 import { Weapon } from './Weapon';
+import { ShipRefitter } from './components/ship-refitter';
 
-const App = () => (<div>
-    <ShipSelector shipList={ships as unknown as Ship[]} />
-    <WeaponSelector weaponList={weapons as unknown as Weapon[]} />
-</div>)
+const App = () => {
+    const [selectedShip, setSelectedShip] = React.useState((shipJson as unknown as Ship[])[shipJson.length - 1]);
+
+    const ships = shipJson as unknown as Ship[];
+    const weapons = weaponJson as unknown as Weapon[];
+
+    return (<div>
+        <ShipSelector shipList={ships} onShipSelected={(ship) => setSelectedShip(ship)} />
+        <ShipRefitter ship={selectedShip} />
+        <WeaponSelector weaponList={weapons} />
+    </div>)
+};
 
 const root = ReactDOM.createRoot(
     document.getElementById('root')!
