@@ -7,19 +7,23 @@ import { WeaponHardpoint } from './weapon-hardpoint';
 
 const ShipContainer = styled.div`
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 600px;
     border: 1px solid black;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: 1fr auto 1fr;
 `;
 
 const Sprite = styled.img<{ scaleFactor: number }>`
     transform: scale(${props => props.scaleFactor});
+    grid-row: 2;
+    grid-column: 2;
 `;
 
 const WeaponSlotDisplays = styled.div`
-    margin: 0 auto;
+    position: relative;
+    grid-row: 2;
+    grid-column: 2;
 `;
 
 const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>`
@@ -31,10 +35,9 @@ const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>
     display: flex;
     align-items: center;
     justify-content: center;
-    background-position: 0 24px,center;
     background-size: 32px;
     background-repeat: no-repeat;
-}
+    transform: translate(-50%, -50%);
 
     &.ballistic {
         background-image: url(assets/Ballistic.svg);
@@ -51,6 +54,10 @@ const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>
     &.universal {
         background-image: url(assets/Universal.svg);
     }
+
+    &:hover {
+        border: 1px solid #fff;
+    }
 `;
 
 interface ShipRefitterProps {
@@ -59,10 +66,10 @@ interface ShipRefitterProps {
 export const ShipRefitter: FC<ShipRefitterProps> = ({ ship }) => {
     return (
         <ShipContainer>
+            <Sprite src={ship.spriteName} scaleFactor={1.5} />
             <WeaponSlotDisplays>
-                <Sprite src={ship.spriteName} scaleFactor={1.5} />
-                {ship.weaponSlots.map((slot) => (
-                    <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * 1.5} y={slot.locations[0] * 1.5} />
+                {ship.weaponSlots.filter(slot => slot.type !== 'DECORATIVE' && slot.type !== 'SYSTEM').map((slot) => (
+                    <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * -1.5 + ship.center[0] * 1} y={slot.locations[0] * -1.5 + (ship.height - ship.center[1] * 1)} className={slot.type} />
                 ))}
             </WeaponSlotDisplays>
         </ShipContainer>

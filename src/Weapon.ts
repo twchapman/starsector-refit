@@ -1,5 +1,5 @@
 export type WeaponSize = "SMALL" | "MEDIUM" | "LARGE";
-export type WeaponType = "BALLISTIC" | "ENERGY" | "MISSILE" | "DECORATIVE";
+export type WeaponType = "BALLISTIC" | "ENERGY" | "MISSILE" | "DECORATIVE" | "SYSTEM";
 
 export interface Weapon {
     hardpointSprite: string;
