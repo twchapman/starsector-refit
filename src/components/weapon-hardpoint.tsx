@@ -27,6 +27,9 @@ const WeaponBorder = styled.div`
     &.synergy {
         background-image: url(assets/Synergy.svg);
     }
+    &.composite {
+        background-image: url(assets/Composite.svg);
+    }
     &.universal {
         background-image: url(assets/Universal.svg);
     }

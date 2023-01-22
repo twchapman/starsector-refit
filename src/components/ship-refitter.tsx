@@ -51,12 +51,15 @@ const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>
     &.synergy {
         background-image: url(assets/Synergy.svg);
     }
+    &.composite {
+        background-image: url(assets/Composite.svg);
+    }
     &.universal {
         background-image: url(assets/Universal.svg);
     }
 
     &:hover {
-        border: 1px solid #fff;
+        border: 2px solid #fff;
     }
 `;
 

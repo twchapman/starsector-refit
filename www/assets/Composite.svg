@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="90.509674px" height="90.50967px" viewBox="0 0 90.509674 90.50967" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path d="M13.2548 13L77.2548 13L77.2548 77L13.2548 77L13.2548 13Z" id="path_1" />
+    <path d="M45.2548 0L90.5097 45.2548L45.2548 90.5097L0 45.2548L45.2548 0Z" id="path_2" />
+    <clipPath id="clip_1">
+      <use xlink:href="#path_1" />
+    </clipPath>
+    <clipPath id="clip_2">
+      <use xlink:href="#path_2" />
+    </clipPath>
+  </defs>
+  <g id="Composite">
+    <g id="Ballistic-2">
+      <g clip-path="url(#clip_1)">
+        <use xlink:href="#path_1" fill="none" stroke="#D6FE02" stroke-width="8" />
+      </g>
+    </g>
+    <g id="Missile-2">
+      <g clip-path="url(#clip_2)">
+        <use xlink:href="#path_2" fill="none" stroke="#D6FE02" stroke-width="8" />
+      </g>
+    </g>
+  </g>
+</svg>
