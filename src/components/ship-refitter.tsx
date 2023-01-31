@@ -3,6 +3,7 @@ import { FC, useState } from 'react';
 import styled from 'styled-components';
 import { Ship } from '../Ship';
 import { WeaponType } from '../Weapon';
+import { WeaponSlot } from '../WeaponSlot';
 import { WeaponHardpoint } from './weapon-hardpoint';
 
 const ShipContainer = styled.div`
@@ -69,14 +70,15 @@ const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>
 
 interface ShipRefitterProps {
     ship: Ship;
+    onSlotSelected: (slot: WeaponSlot) => void;
 }
-export const ShipRefitter: FC<ShipRefitterProps> = ({ ship }) => {
+export const ShipRefitter: FC<ShipRefitterProps> = ({ ship, onSlotSelected }) => {
     return (
         <ShipContainer>
             <Sprite src={ship.spriteName} scaleFactor={1.5} />
             <WeaponSlotDisplays>
                 {ship.weaponSlots.filter(slot => slot.type !== 'DECORATIVE' && slot.type !== 'SYSTEM').map((slot) => (
-                    <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * -1.5 + ship.center[0] * 1} y={slot.locations[0] * -1.5 + (ship.height - ship.center[1] * 1)} className={slot.type} />
+                    <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * -1.5 + ship.center[0] * 1} y={slot.locations[0] * -1.5 + (ship.height - ship.center[1] * 1)} className={slot.type} onClick={() => onSlotSelected(slot)} />
                 ))}
             </WeaponSlotDisplays>
         </ShipContainer>

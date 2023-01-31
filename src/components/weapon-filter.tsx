@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { FC, useState } from 'react';
 import styled from 'styled-components';
-import { WeaponType } from '../Weapon';
+import { WeaponSize, WeaponType } from '../Weapon';
 
 export type WeaponFilterType = "ALL" | WeaponType;
+export type WeaponFilterSize = "ALL" | WeaponSize;
 
 const WeaponFilterContainer = styled.div`
     width: 510px;
