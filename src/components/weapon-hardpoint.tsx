@@ -13,7 +13,6 @@ const WeaponBorder = styled.div`
     background-position: 0 24px,center;
     background-size: 32px;
     background-repeat: no-repeat;
-}
 
     &.ballistic {
         background-image: url(assets/Ballistic.svg);
@@ -29,6 +28,9 @@ const WeaponBorder = styled.div`
     }
     &.composite {
         background-image: url(assets/Composite.svg);
+    }
+    &.hybrid {
+        background-image: url(assets/Hybrid.svg);
     }
     &.universal {
         background-image: url(assets/Universal.svg);

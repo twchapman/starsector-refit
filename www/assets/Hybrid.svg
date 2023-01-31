@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="90.3px" height="90.3px" viewBox="0 0 90.3 90.3" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <path d="M13 13L77 13L77 77L13 77L13 13Z" id="path_1" />
+    <path d="M0 45.15C0 20.2143 20.2143 0 45.15 0C70.0857 0 90.3 20.2143 90.3 45.15C90.3 70.0857 70.0857 90.3 45.15 90.3C20.2143 90.3 0 70.0857 0 45.15Z" id="path_2" />
+    <clipPath id="clip_1">
+      <use xlink:href="#path_1" />
+    </clipPath>
+    <clipPath id="clip_2">
+      <use xlink:href="#path_2" />
+    </clipPath>
+  </defs>
+  <g id="Hybrid">
+    <g id="Ballistic">
+      <g clip-path="url(#clip_1)">
+        <use xlink:href="#path_1" fill="none" stroke="#F2A20C" stroke-width="8" />
+      </g>
+    </g>
+    <g id="Energy">
+      <g clip-path="url(#clip_2)">
+        <use xlink:href="#path_2" fill="none" stroke="#F2A20C" stroke-width="8" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -6,6 +6,7 @@ import { WeaponType } from '../Weapon';
 import { WeaponHardpoint } from './weapon-hardpoint';
 
 const ShipContainer = styled.div`
+    flex-grow: 1;
     position: relative;
     height: 600px;
     border: 1px solid black;
@@ -54,11 +55,14 @@ const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>
     &.composite {
         background-image: url(assets/Composite.svg);
     }
+    &.hybrid {
+        background-image: url(assets/Hybrid.svg);
+    }
     &.universal {
         background-image: url(assets/Universal.svg);
     }
 
-    &:hover {
+    &:hover, &.active {
         border: 2px solid #fff;
     }
 `;
