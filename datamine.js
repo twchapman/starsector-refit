@@ -25,6 +25,17 @@ const shipOutput = path.join("data", "ships.json");
 if (fs.existsSync(shipOutput)) fs.unlinkSync(shipOutput);
 
 console.log("| mining ship data...");
+const shipCsv = fs.readFileSync(path.join(dataDirPath, "weapons", "weapon_data.csv"), { encoding: "utf-8" });
+const shipCsvLines = shipCsv.split('\r\n');
+const shipCsvFields = shipCsvLines[0].split(',');
+const shipCsvData = shipCsvLines.slice(1).map(line => {
+    const shipData = {};
+    const values = line.split(',');
+    for (let f = 0; f < shipCsvFields.length; f++) {
+        shipData[shipCsvFields[f]] = values[f];
+    }
+    return shipData;
+});
 const shipFields = ["center", "height", "hullId", "hullName", "hullSize", "spriteName", "weaponSlots"];
 const shipFilters = ["derelict", "drone", "module", "remnant", "station"];
 const shipList = fs.readdirSync(path.join(dataDirPath, "hulls"));
@@ -37,6 +48,7 @@ const ships = shipList.map(shipFile => {
     const shipData = JSON.parse(shipJson);
     const ship = {};
     shipFields.forEach(field => ship[field] = shipData[field]);
+    const thisShipCsvData = shipCsvData.filter(s => s.id === shipData.id)[0];
     if (ship.hullSize === "FIGHTER") return;
     const actualShipSprite = ship["spriteName"];
     ship["spriteName"] = ship["spriteName"].replace(/(graphics\/ships\/).+\/(.+\.png)/, "$1$2");
