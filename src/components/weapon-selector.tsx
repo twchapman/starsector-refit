@@ -1,7 +1,8 @@
 import * as React from 'react'
 import { FC, useState } from 'react';
 import styled from 'styled-components';
-import { Weapon, WeaponSize, WeaponType } from '../Weapon';
+import { getWeaponTypes, Weapon, WeaponSize, WeaponType } from '../Weapon';
+import { WeaponSlot } from '../WeaponSlot';
 import { WeaponFilter, WeaponFilterSize, WeaponFilterType } from './weapon-filter';
 import { WeaponHardpoint } from './weapon-hardpoint';
 
@@ -56,9 +57,10 @@ interface WeaponViewProps {
     range: number;
     size: WeaponSize;
     ordinancePoints: number;
+    onClick?: () => void;
 }
-const WeaponView: FC<WeaponViewProps> = ({ name, hardpointSprite, type, range, size, ordinancePoints }) => {
-    return <WeaponViewContainer>
+const WeaponView: FC<WeaponViewProps> = ({ name, hardpointSprite, type, range, size, ordinancePoints, onClick }) => {
+    return <WeaponViewContainer onClick={onClick}>
         <WeaponViewIcon><WeaponHardpoint sprite={hardpointSprite} type={type} /></WeaponViewIcon>
         <WeaponViewName>{name}</WeaponViewName>
         <WeaponViewRange>range: {range}, {size}</WeaponViewRange>
@@ -68,10 +70,10 @@ const WeaponView: FC<WeaponViewProps> = ({ name, hardpointSprite, type, range, s
 
 interface WeaponSelectorProps {
     weaponList: Weapon[];
-    weaponFilterTypes?: WeaponFilterType[];
-    weaponFilterMaxSize?: WeaponFilterSize;
+    weaponSlot?: WeaponSlot;
+    setSlotWeapon?: (weapon: Weapon) => void;
 }
-export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponFilterTypes, weaponFilterMaxSize }) => {
+export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot, setSlotWeapon }) => {
     const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null);
     const [filterType, setFiltertype] = useState<WeaponFilterType>("ALL");
     const [filterSize, setFilterSize] = useState<WeaponFilterSize>("ALL");
@@ -80,6 +82,7 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponFilt
         setFiltertype(type);
     }
 
+    const weaponFilterTypes = weaponSlot ? getWeaponTypes(weaponSlot.type) : null;
     const filterByType = (weapon: Weapon) => {
         if (weaponFilterTypes && !weaponFilterTypes.includes(weapon.type)) {
             return false;
@@ -88,8 +91,9 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponFilt
         return filterType === "ALL" || weapon.type === filterType;
     }
 
+    const weaponFilterMaxSize: WeaponFilterSize | null = weaponSlot ? weaponSlot.size : null;
     const filterBySize = (weapon: Weapon) => {
-        if (!weaponFilterMaxSize || weaponFilterMaxSize === "ALL" || weaponFilterMaxSize === "LARGE") return true;
+        if (!weaponFilterMaxSize || weaponFilterMaxSize === "LARGE") return true;
         if (weaponFilterMaxSize === "MEDIUM") return weapon.size === "MEDIUM" || weapon.size === "SMALL";
         if (weaponFilterMaxSize === "SMALL") return weapon.size === "SMALL";
     }
@@ -107,7 +111,15 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponFilt
         <WeaponFilter onFilterChanged={onFilterChanged} />
         <WeaponList>
             {weaponList.filter(w => w.type !== "DECORATIVE" && filterByType(w) && filterBySize(w)).map(w => {
-                return <WeaponView key={w.id} name={w.name} hardpointSprite={w.hardpointSprite} type={w.type} range={w.range} size={w.size} ordinancePoints={w.OPs} />
+                return <WeaponView
+                    key={w.id}
+                    name={w.name}
+                    hardpointSprite={w.hardpointSprite}
+                    type={w.type}
+                    range={w.range}
+                    size={w.size}
+                    ordinancePoints={w.OPs}
+                    onClick={() => setSlotWeapon && setSlotWeapon(w)} />
             })}
         </WeaponList>
     </div>)

@@ -28,7 +28,7 @@ const App = () => {
         <ShipSelector shipList={ships} onShipSelected={(ship) => setSelectedShip(ship)} />
         <ShipRefitterSection>
             <ShipRefitter ship={selectedShip} onSlotSelected={setSelectedSlot} />
-            {selectedSlot ? <WeaponSelector weaponList={weapons} weaponFilterMaxSize={selectedSlot.size} weaponFilterTypes={getWeaponTypes(selectedSlot.type)} /> : <WeaponSelector weaponList={weapons} />}
+            {selectedSlot ? <WeaponSelector weaponList={weapons} weaponSlot={selectedSlot} /> : <WeaponSelector weaponList={weapons} />}
         </ShipRefitterSection>
     </div>)
 };
