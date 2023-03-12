@@ -1,6 +1,10 @@
 import * as React from 'react'
 import { FC, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { selectWeaponForShip } from '../state/shipSlice';
+import { RootState } from '../state/store';
+import { selectWeaponForSlot } from '../state/weaponSlotSlice';
 import { getWeaponTypes, Weapon, WeaponSize, WeaponType } from '../Weapon';
 import { WeaponSlot } from '../WeaponSlot';
 import { WeaponFilter, WeaponFilterSize, WeaponFilterType } from './weapon-filter';
@@ -74,7 +78,11 @@ interface WeaponSelectorProps {
     setSlotWeapon?: (weapon: Weapon) => void;
 }
 export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot, setSlotWeapon }) => {
-    const [selectedWeapon, setSelectedWeapon] = useState<Weapon | null>(null);
+    const dispatchEvent = useDispatch();
+    const selectedSlot = useSelector((state: RootState) => state.weaponSlots.selectedSlot);
+    const selectedWeapon = useSelector((state: RootState) => {
+        return state.weaponSlots.selectedSlot?.selectedWeapon;
+    });
     const [filterType, setFiltertype] = useState<WeaponFilterType>("ALL");
     const [filterSize, setFilterSize] = useState<WeaponFilterSize>("ALL");
 
@@ -119,7 +127,11 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot
                     range={w.range}
                     size={w.size}
                     ordinancePoints={w.OPs}
-                    onClick={() => setSlotWeapon && setSlotWeapon(w)} />
+                    onClick={() => {
+                        if (!selectedSlot) return;
+                        dispatchEvent(selectWeaponForSlot(w));
+                        dispatchEvent(selectWeaponForShip({ slot: selectedSlot, weapon: w }));
+                    }} />
             })}
         </WeaponList>
     </div>)

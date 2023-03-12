@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Weapon } from "../Weapon";
 import { WeaponSlot } from "../WeaponSlot";
 
 
@@ -17,9 +18,13 @@ export const weaponSlotSlice = createSlice({
         selectWeaponSlot: (state: WeaponSlotState, action: PayloadAction<WeaponSlot>) => {
             state.selectedSlot = action.payload;
         },
+        selectWeaponForSlot: (state: WeaponSlotState, action: PayloadAction<Weapon>) => {
+            if (!state.selectedSlot) return;
+            state.selectedSlot.selectedWeapon = action.payload;
+        }
     }
 })
 
-export const { selectWeaponSlot } = weaponSlotSlice.actions;
+export const { selectWeaponSlot, selectWeaponForSlot } = weaponSlotSlice.actions;
 
 export default weaponSlotSlice.reducer;

@@ -78,7 +78,9 @@ export const ShipRefitter: FC<ShipRefitterProps> = ({ ship, onSlotSelected }) =>
             <Sprite src={ship.spriteName} scaleFactor={1.5} />
             <WeaponSlotDisplays>
                 {ship.weaponSlots.filter(slot => slot.type !== 'DECORATIVE' && slot.type !== 'SYSTEM').map((slot) => (
-                    <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * -1.5 + ship.center[0] * 1} y={slot.locations[0] * -1.5 + (ship.height - ship.center[1] * 1)} className={slot.type} onClick={() => onSlotSelected(slot)} />
+                    <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * -1.5 + ship.center[0] * 1} y={slot.locations[0] * -1.5 + (ship.height - ship.center[1] * 1)} className={slot.type} onClick={() => onSlotSelected(slot)}>
+                        {slot.selectedWeapon && <img src={slot.selectedWeapon.hardpointSprite} />}
+                    </WeaponSlotDisplay>
                 ))}
             </WeaponSlotDisplays>
         </ShipContainer>
