@@ -13,7 +13,6 @@ import { Ship } from './Ship';
 import weaponJson from '../data/weapons.json';
 import { Weapon, getWeaponTypes } from './Weapon';
 import { ShipRefitter } from './components/ship-refitter';
-import { WeaponSlot } from './WeaponSlot';
 import { selectShip } from './state/shipSlice';
 import { selectWeaponSlot } from './state/weaponSlotSlice';
 
