@@ -21,8 +21,8 @@ const ShipRefitterSection = styled.div`
 `;
 
 const App = () => {
-    const selectedShip = useSelector((state: RootState) => state.ship.selectedShip);
     const dispatch = useDispatch();
+    const selectedShip = useSelector((state: RootState) => state.ship.selectedShip);
     const [selectedSlot, setSelectedSlot] = React.useState<WeaponSlot | null>(null);
 
     const ships = shipJson as unknown as Ship[];
