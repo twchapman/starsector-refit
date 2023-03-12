@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import shipReducer from "./shipSlice";
+import weaponSlotReducer from "./weaponSlotSlice";
 
 export const store = configureStore({
     reducer: {
-        ship: shipReducer
+        ship: shipReducer,
+        weaponSlots: weaponSlotReducer
     }
 })
 
