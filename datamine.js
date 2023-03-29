@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const csvParse = require('csv-parse/sync');
 
 const [, , gameCorePath] = process.argv;
 
@@ -26,18 +27,12 @@ if (fs.existsSync(shipOutput)) fs.unlinkSync(shipOutput);
 
 console.log("| mining ship data...");
 const shipCsv = fs.readFileSync(path.join(dataDirPath, "hulls", "ship_data.csv"), { encoding: "utf-8" });
-const shipCsvLines = shipCsv.split('\r\n');
-const shipCsvFields = shipCsvLines[0].split(',');
-const shipCsvData = shipCsvLines.slice(1).map(line => {
-    const shipData = {};
-    const values = line.split(',');
-    for (let f = 0; f < shipCsvFields.length; f++) {
-        shipData[shipCsvFields[f]] = values[f];
-    }
-    return shipData;
+const shipCsvData = csvParse.parse(shipCsv, {
+    columns: true,
+    skip_empty_lines: true
 });
 const shipFields = ["center", "height", "hullId", "hullName", "hullSize", "spriteName", "weaponSlots"];
-const shipFilters = ["derelict", "drone", "module", "omega", "platform", "remnant", "station"];
+const shipFilters = ["derelict_", "drone_", "module_", "platform", "remnant_", "station"];
 const shipCsvFieldKeys = [
     ["armor", "armor rating"],
     ["fighterBays", "fighter bays"],
@@ -66,6 +61,8 @@ const ships = shipList.map(shipFile => {
     for (let filter of shipCsvFieldKeys) {
         ship[filter[0]] = thisShipCsvData[filter[1]];
     }
+    ship.hints = thisShipCsvData.hints.split(', ');
+    if (ship.hints.includes("HIDE_IN_CODEX")) console.log(ship.hullName);
     const actualShipSprite = ship["spriteName"];
     ship["spriteName"] = ship["spriteName"].replace(/(graphics\/ships\/).+\/(.+\.png)/, "$1$2");
     fs.copyFileSync(path.join(gameCorePath, actualShipSprite), path.join(__dirname, ship["spriteName"]));
@@ -81,15 +78,9 @@ if (fs.existsSync(weaponOutput)) fs.unlinkSync(weaponOutput);
 
 console.log("| mining weapon data...");
 const weaponCsv = fs.readFileSync(path.join(dataDirPath, "weapons", "weapon_data.csv"), { encoding: "utf-8" });
-const weaponCsvLines = weaponCsv.split('\r\n');
-const weaponCsvFields = weaponCsvLines[0].split(',');
-const weaponCsvData = weaponCsvLines.slice(1).map(line => {
-    const weaponData = {};
-    const values = line.split(',');
-    for (let f = 0; f < weaponCsvFields.length; f++) {
-        weaponData[weaponCsvFields[f]] = values[f];
-    }
-    return weaponData;
+const weaponCsvData = csvParse.parse(weaponCsv, {
+    columns: true,
+    skip_empty_lines: true
 });
 const weaponFields = ["hardpointSprite", "id", "size", "type"];
 const weaponFilters = ["blinker", "cryo", "interdictor", "lights", "rift", "tpc"];
