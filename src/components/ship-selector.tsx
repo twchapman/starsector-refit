@@ -32,7 +32,7 @@ export const ShipSelector: FC<ShipSelectorProps> = ({ shipList, onShipSelected }
         <div>
             {shiplistOpen ?
                 <ShipList>{shipList.map((ship) => (
-                    <div onClick={() => handleShipSelected(ship)}>
+                    <div key={ship.hullId} onClick={() => handleShipSelected(ship)}>
                         <ShipBox key={ship.hullId} name={ship.hullName} spritePath={ship.spriteName} />
                     </div>))}
                 </ShipList>
