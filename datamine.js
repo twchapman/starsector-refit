@@ -25,7 +25,7 @@ const shipOutput = path.join("data", "ships.json");
 if (fs.existsSync(shipOutput)) fs.unlinkSync(shipOutput);
 
 console.log("| mining ship data...");
-const shipCsv = fs.readFileSync(path.join(dataDirPath, "weapons", "weapon_data.csv"), { encoding: "utf-8" });
+const shipCsv = fs.readFileSync(path.join(dataDirPath, "hulls", "ship_data.csv"), { encoding: "utf-8" });
 const shipCsvLines = shipCsv.split('\r\n');
 const shipCsvFields = shipCsvLines[0].split(',');
 const shipCsvData = shipCsvLines.slice(1).map(line => {
@@ -37,7 +37,19 @@ const shipCsvData = shipCsvLines.slice(1).map(line => {
     return shipData;
 });
 const shipFields = ["center", "height", "hullId", "hullName", "hullSize", "spriteName", "weaponSlots"];
-const shipFilters = ["derelict", "drone", "module", "remnant", "station"];
+const shipFilters = ["derelict", "drone", "module", "omega", "platform", "remnant", "station"];
+const shipCsvFieldKeys = [
+    ["armor", "armor rating"],
+    ["fighterBays", "fighter bays"],
+    ["fluxCapacity", "max flux"],
+    ["fluxDissipation", "flux dissipation"],
+    ["hull", "hitpoints"],
+    ["OPs", "ordnance points"],
+    ["topSpeed", "max speed"],
+    ["shieldArc", "shield arc"],
+    ["shieldUpkeep", "shield upkeep"],
+    ["shieldEfficiency", "shield efficiency"]
+];
 const shipList = fs.readdirSync(path.join(dataDirPath, "hulls"));
 const ships = shipList.map(shipFile => {
     if (!shipFile.endsWith(".ship")) return;
@@ -48,8 +60,12 @@ const ships = shipList.map(shipFile => {
     const shipData = JSON.parse(shipJson);
     const ship = {};
     shipFields.forEach(field => ship[field] = shipData[field]);
-    const thisShipCsvData = shipCsvData.filter(s => s.id === shipData.id)[0];
+    const thisShipCsvData = shipCsvData.filter(s => s.id === shipData.hullId)[0];
+    if (!thisShipCsvData) return;
     if (ship.hullSize === "FIGHTER") return;
+    for (let filter of shipCsvFieldKeys) {
+        ship[filter[0]] = thisShipCsvData[filter[1]];
+    }
     const actualShipSprite = ship["spriteName"];
     ship["spriteName"] = ship["spriteName"].replace(/(graphics\/ships\/).+\/(.+\.png)/, "$1$2");
     fs.copyFileSync(path.join(gameCorePath, actualShipSprite), path.join(__dirname, ship["spriteName"]));
