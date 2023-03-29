@@ -37,34 +37,46 @@ const WeaponSlotDisplay = styled.div<{ type: WeaponType; x: number; y: number }>
     display: flex;
     align-items: center;
     justify-content: center;
-    background-size: 32px;
-    background-repeat: no-repeat;
     transform: translate(-50%, -50%);
 
-    &.ballistic {
+    &:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-size: 32px;
+        background-repeat: no-repeat;
+        opacity: .3;
+        transition: all .2s;
+    }
+
+    &.ballistic:before {
         background-image: url(assets/Ballistic.svg);
     }
-    &.energy {
+    &.energy:before {
         background-image: url(assets/Energy.svg);
     }
-    &.missile {
+    &.missile:before {
         background-image: url(assets/Missile.svg);
     }
-    &.synergy {
+    &.synergy:before {
         background-image: url(assets/Synergy.svg);
     }
-    &.composite {
+    &.composite:before {
         background-image: url(assets/Composite.svg);
     }
-    &.hybrid {
+    &.hybrid:before {
         background-image: url(assets/Hybrid.svg);
     }
-    &.universal {
+    &.universal:before {
         background-image: url(assets/Universal.svg);
     }
 
-    &:hover, &.active {
-        border: 2px solid #fff;
+    &:hover:before, &.active:before {
+        opacity: 1;
     }
 `;
 
