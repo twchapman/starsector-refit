@@ -10,4 +10,15 @@ export interface Ship {
     hullSize: HullSize
     spriteName: string;
     weaponSlots: WeaponSlot[];
+    armor: number;
+    fighterBays: number;
+    fluxCapacity: number;
+    fluxDissipation: number;
+    hull: number;
+    OPs: number;
+    topSpeed: number;
+    shieldArc: 90;
+    shieldUpkeep: number;
+    shieldEfficiency: number;
+    hints: string[];
 }
