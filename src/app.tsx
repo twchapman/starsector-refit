@@ -15,18 +15,22 @@ import { Weapon, getWeaponTypes } from './Weapon';
 import { ShipRefitter } from './components/ship-refitter';
 import { selectShip } from './state/shipSlice';
 import { selectWeaponSlot } from './state/weaponSlotSlice';
+import { ShipLoadout } from './components/ship-loadout';
 
 const ShipRefitterSection = styled.div`
     display: flex;
 `;
 
+const ships = shipJson as unknown as Ship[];
+const weapons = weaponJson as unknown as Weapon[];
+weapons.forEach((weapon) => {
+    weapon.OPs = parseInt(weapon.OPs as unknown as string);
+});
+
 const App = () => {
     const dispatch = useDispatch();
     const selectedShip = useSelector((state: RootState) => state.ship.selectedShip);
     const selectedWeaponSlot = useSelector((state: RootState) => state.weaponSlots.selectedSlot);
-
-    const ships = shipJson as unknown as Ship[];
-    const weapons = weaponJson as unknown as Weapon[];
 
     return (<div>
         <ShipSelector shipList={ships} onShipSelected={(ship) => dispatch(selectShip(ship))} />
@@ -34,6 +38,7 @@ const App = () => {
             {selectedShip && <ShipRefitter ship={selectedShip} onSlotSelected={(slot) => dispatch(selectWeaponSlot(slot))} />}
             {selectedWeaponSlot ? <WeaponSelector weaponList={weapons} weaponSlot={selectedWeaponSlot} /> : <WeaponSelector weaponList={weapons} />}
         </ShipRefitterSection>
+        <ShipLoadout />
     </div>)
 };
 
