@@ -3,3 +3,15 @@ body {
     font-size: 18px;
     background: #0C1E23;
 }
+
+.white-text {
+    color: #fff;
+}
+
+.black-outline {
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000,
+        -1px 1px 0 #000,
+        1px 1px 0 #000;
+}
