@@ -4,6 +4,11 @@ const csvParse = require('csv-parse/sync');
 
 const [, , gameCorePath] = process.argv;
 
+if (gameCorePath === null || gameCorePath === undefined || gameCorePath.length < 1) {
+    console.error('Error: missing game data path. Usage: npm run datamine path/to/Fractal Softworks/Starsector/starsector-core');
+    process.exit(1);
+}
+
 console.log("starting datamining.")
 
 const dataDirPath = path.join(gameCorePath, "data");
@@ -62,7 +67,7 @@ const ships = shipList.map(shipFile => {
         ship[filter[0]] = thisShipCsvData[filter[1]];
     }
     ship.hints = thisShipCsvData.hints.split(', ');
-    if (ship.hints.includes("HIDE_IN_CODEX")) console.log(ship.hullName);
+    // if (ship.hints.includes("HIDE_IN_CODEX")) console.log(ship.hullName);
     const actualShipSprite = ship["spriteName"];
     ship["spriteName"] = ship["spriteName"].replace(/(graphics\/ships\/).+\/(.+\.png)/, "$1$2");
     fs.copyFileSync(path.join(gameCorePath, actualShipSprite), path.join(__dirname, ship["spriteName"]));
@@ -91,16 +96,33 @@ const weapons = weaponList.map(weaponFile => {
         if (weaponFile.startsWith(filter)) return;
     }
     const weaponJson = cleanedJson(fs.readFileSync(path.join(dataDirPath, "weapons", weaponFile), { encoding: "utf-8" }));
-    const weaponData = JSON.parse(weaponJson);
+    let weaponData;
+    try {
+        weaponData = JSON.parse(weaponJson);
+    } catch (e) {
+        console.warn(`Failed to parse ${weaponFile}, skipping.`);
+        return;
+    }
     const weapon = {};
     weaponFields.forEach(field => weapon[field] = weaponData[field]);
     const thisWeaponCsvData = weaponCsvData.filter(w => w.id === weaponData.id)[0];
     weapon.name = thisWeaponCsvData.name;
     weapon.OPs = thisWeaponCsvData.OPs;
     weapon.range = thisWeaponCsvData.range;
-    const actualWeaponSprite = weapon["hardpointSprite"];
-    weapon["hardpointSprite"] = weapon["hardpointSprite"].replace(/(graphics\/weapons\/)(?:.*\/)?(.+\.png)/, "$1$2");
-    fs.copyFileSync(path.join(gameCorePath, actualWeaponSprite), path.join(__dirname, weapon["hardpointSprite"]));
+    const hardpointBaseSprite = weapon["hardpointSprite"];
+    const hardpointGunSprite = weapon["hardpointGunSprite"];
+    try {
+        if (hardpointBaseSprite) {
+            weapon["hardpointSprite"] = weapon["hardpointSprite"].replace(/(graphics\/weapons\/)(?:.*\/)?(.+\.png)/, "$1$2");
+            fs.copyFileSync(path.join(gameCorePath, hardpointBaseSprite), path.join(__dirname, weapon["hardpointSprite"]));
+        }
+        if (hardpointGunSprite) {
+            weapon["hardpointGunSprite"] = weapon["hardpointGunSprite"].replace(/(graphics\/weapons\/)(?:.*\/)?(.+\.png)/, "$1$2");
+            fs.copyFileSync(path.join(gameCorePath, hardpointGunSprite), path.join(__dirname, weapon["hardpointGunSprite"]));
+        }
+    } catch (e) {
+        console.warn(`Couldn't find sprite ${hardpointBaseSprite} or ${hardpointGunSprite}: `);
+    }
     return weapon;
 }).filter(w => w);
 
@@ -108,5 +130,4 @@ console.log(`|> wrote ${weapons.length} weapons.`);
 
 fs.writeFileSync(weaponOutput, JSON.stringify(weapons));
 
-// End
 console.log('finished.')

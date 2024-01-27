@@ -6,8 +6,31 @@ import { ShipBox } from './ship-box';
 
 const ShipList = styled.div`
     display: flex;
-    flext-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
+`;
+
+const NewLoadoutPlus = styled.div`
+    display:flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    font-weight: bold;
+    color: #184A55;
+    text-shadow:
+        -1px -1px 0 #fff,
+        1px -1px 0 #fff,
+        -1px 1px 0 #fff,
+        1px 1px 0 #fff;
+    user-select: none;
+    width: 85px;
+    height: 85px;
+    padding: 5px;
+    background: #000;
+
+    &:hover {
+    background: #184A55;
+    }
 `;
 
 interface ShipSelectorProps {
@@ -15,7 +38,6 @@ interface ShipSelectorProps {
     onShipSelected: (ship: Ship) => void;
 }
 export const ShipSelector: FC<ShipSelectorProps> = ({ shipList, onShipSelected }) => {
-    const [selectedShip, setSelectedShip] = useState(shipList[0]);
     const [shiplistOpen, setShiplistOpen] = useState(false);
     const [showSpoilers, setShowSpoilers] = useState(false);
 
@@ -24,7 +46,6 @@ export const ShipSelector: FC<ShipSelectorProps> = ({ shipList, onShipSelected }
     }
 
     const handleShipSelected = (ship: Ship) => {
-        setSelectedShip(ship);
         onShipSelected(ship);
         setShiplistOpen(false);
     }
@@ -39,7 +60,7 @@ export const ShipSelector: FC<ShipSelectorProps> = ({ shipList, onShipSelected }
                     </div>))}
                 </ShipList>
                 : <div onClick={() => handleOpenShipList()}>
-                    <ShipBox name={selectedShip.hullName} spritePath={selectedShip.spriteName} />
+                    <NewLoadoutPlus>+</NewLoadoutPlus>
                 </div>}
         </div>
     );
