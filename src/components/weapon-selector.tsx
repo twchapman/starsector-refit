@@ -1,10 +1,7 @@
 import * as React from 'react'
 import { FC, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { selectWeaponForShip } from '../state/shipSlice';
-import { RootState } from '../state/store';
-import { selectWeaponForSlot } from '../state/weaponSlotSlice';
+import { useStore } from '../state/useStore';
 import { getWeaponTypes, Weapon, WeaponSize, WeaponType } from '../Weapon';
 import { WeaponSlot } from '../WeaponSlot';
 import { WeaponFilter, WeaponFilterSize, WeaponFilterType } from './weapon-filter';
@@ -78,11 +75,11 @@ interface WeaponSelectorProps {
     setSlotWeapon?: (weapon: Weapon) => void;
 }
 export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot, setSlotWeapon }) => {
-    const dispatchEvent = useDispatch();
-    const selectedSlot = useSelector((state: RootState) => state.weaponSlots.selectedSlot);
-    const selectedWeapon = useSelector((state: RootState) => {
-        return state.weaponSlots.selectedSlot?.selectedWeapon;
-    });
+    const selectWeaponForSlot = useStore(s => s.selectWeaponForSlot);
+    const selectWeaponForShip = useStore(s => s.selectWeaponForShip);
+    const selectedSlot = useStore(s => s.selectedSlot);
+    const shipModel = useStore(s => s.shipModel);
+    const selectedWeapon = selectedSlot?.selectedWeapon;
     const [filterType, setFiltertype] = useState<WeaponFilterType>("ALL");
     const [filterSize, setFilterSize] = useState<WeaponFilterSize>("ALL");
 
@@ -106,6 +103,12 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot
         if (weaponFilterMaxSize === "SMALL") return weapon.size === "SMALL";
     }
 
+    // prefer model-based validation when available
+    const canFitByModel = (weapon: Weapon, slot?: WeaponSlot) => {
+        if (!shipModel || !slot) return true;
+        return shipModel.canFitWeaponIntoSlot(weapon, slot as WeaponSlot);
+    }
+
     return (<div>
         {selectedWeapon ? <WeaponView key={selectedWeapon.id}
             name={selectedWeapon.name}
@@ -113,12 +116,17 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot
             type={selectedWeapon.type}
             range={selectedWeapon.range}
             size={selectedWeapon.size}
-            ordinancePoints={selectedWeapon.OPs} />
+            ordinancePoints={selectedWeapon.OPs}
+                onClick={() => {
+                if (!selectedSlot) return;
+                selectWeaponForSlot(null);
+                selectWeaponForShip(selectedSlot);
+            }} />
             : <WeaponViewContainer />
         }
         <WeaponFilter onFilterChanged={onFilterChanged} />
         <WeaponList>
-            {weaponList.filter(w => w.type !== "DECORATIVE" && filterByType(w) && filterBySize(w)).map(w => {
+            {weaponList.filter(w => w.type !== "DECORATIVE" && filterByType(w) && filterBySize(w) && canFitByModel(w, weaponSlot)).map(w => {
                 return <WeaponView
                     key={w.id}
                     name={w.name}
@@ -129,8 +137,8 @@ export const WeaponSelector: FC<WeaponSelectorProps> = ({ weaponList, weaponSlot
                     ordinancePoints={w.OPs}
                     onClick={() => {
                         if (!selectedSlot) return;
-                        dispatchEvent(selectWeaponForSlot(w));
-                        dispatchEvent(selectWeaponForShip({ slot: selectedSlot, weapon: w }));
+                        selectWeaponForSlot(w);
+                        selectWeaponForShip(selectedSlot, w);
                     }} />
             })}
         </WeaponList>

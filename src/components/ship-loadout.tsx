@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { FC } from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { RootState } from '../state/store';
+import { useStore } from '../state/useStore';
+import ShipModel from '../model/ShipModel';
 
 const OPMeter = styled.div`
     position: relative;
@@ -73,9 +73,14 @@ const AdjustAmountButton = styled.button`
 `;
 
 export const ShipLoadout = () => {
-    const selectedShip = useSelector((state: RootState) => state.ship.selectedShip);
+    const selectedShip = useStore(s => s.selectedShip);
+    const shipModel = useStore(s => s.shipModel);
 
-    const loadoutOPs = selectedShip?.weaponSlots.reduce((total, slot) => total + (slot.selectedWeapon?.OPs || 0), 0);
+    let loadoutOPs = 0;
+    if (selectedShip) {
+        const model = shipModel ?? new ShipModel(selectedShip);
+        loadoutOPs = model.weaponSlots.reduce((total, slot) => total + (slot.selectedWeapon?.OPs || 0), 0);
+    }
 
     return (
         <div>

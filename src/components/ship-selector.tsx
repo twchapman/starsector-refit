@@ -53,6 +53,7 @@ export const ShipSelector: FC<ShipSelectorProps> = ({ shipList, onShipSelected }
     return (
         <div>
             <input type="checkbox" id="showSpoilers" checked={showSpoilers} onClick={() => setShowSpoilers(!showSpoilers)} /><label htmlFor="showSpoilers">Show Spoilers</label>
+            <input type='text' size={100} /><button>Load</button>
             {shiplistOpen ?
                 <ShipList>{shipList.filter(ship => showSpoilers ? ship : !ship.hints.includes("HIDE_IN_CODEX")).map((ship) => (
                     <div key={ship.hullId} onClick={() => handleShipSelected(ship)}>

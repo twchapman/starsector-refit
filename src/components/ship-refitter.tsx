@@ -2,6 +2,8 @@ import * as React from 'react'
 import { FC, useState } from 'react';
 import styled from 'styled-components';
 import { Ship } from '../Ship';
+import ShipModel from '../model/ShipModel';
+import { useStore } from '../state/useStore';
 import { WeaponType } from '../Weapon';
 import { WeaponSlot } from '../WeaponSlot';
 import { WeaponHardpoint } from './weapon-hardpoint';
@@ -85,11 +87,13 @@ interface ShipRefitterProps {
     onSlotSelected: (slot: WeaponSlot) => void;
 }
 export const ShipRefitter: FC<ShipRefitterProps> = ({ ship, onSlotSelected }) => {
+    const modelFromStore = useStore(s => s.shipModel);
+    const model = modelFromStore ?? new ShipModel(ship);
     return (
         <ShipContainer>
             <Sprite src={ship.spriteName} scaleFactor={1.5} />
             <WeaponSlotDisplays>
-                {ship.weaponSlots.filter(slot => slot.type !== 'DECORATIVE' && slot.type !== 'SYSTEM').map((slot) => (
+                {model.weaponSlots.filter(slot => slot.type !== 'DECORATIVE' && slot.type !== 'SYSTEM').map((slot) => (
                     <WeaponSlotDisplay key={slot.id} type={slot.type} x={slot.locations[1] * -1.5 + ship.center[0] * 1} y={slot.locations[0] * -1.5 + (ship.height - ship.center[1] * 1)} className={slot.type} onClick={() => onSlotSelected(slot)}>
                         {slot.selectedWeapon && <img src={slot.selectedWeapon.hardpointSprite} />}
                     </WeaponSlotDisplay>

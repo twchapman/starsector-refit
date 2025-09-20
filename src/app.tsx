@@ -1,8 +1,8 @@
 import * as React from 'react'
 import ReactDOM from 'react-dom/client';
 import styled from 'styled-components';
-import { Provider, useDispatch, useSelector } from 'react-redux'
-import { RootState, store } from './state/store'
+import { useStore } from './state/useStore'
+import type { AppState } from './state/useStore';
 import { ShipSelector } from './components/ship-selector';
 import { WeaponSelector } from './components/weapon-selector';
 
@@ -13,8 +13,7 @@ import { Ship } from './Ship';
 import weaponJson from '../data/weapons.json';
 import { Weapon, getWeaponTypes } from './Weapon';
 import { ShipRefitter } from './components/ship-refitter';
-import { selectShip } from './state/shipSlice';
-import { selectWeaponSlot } from './state/weaponSlotSlice';
+// actions removed - using zustand store instead
 import { ShipLoadout } from './components/ship-loadout';
 
 const ShipRefitterSection = styled.div`
@@ -28,14 +27,16 @@ weapons.forEach((weapon) => {
 });
 
 const App = () => {
-    const dispatch = useDispatch();
-    const selectedShip = useSelector((state: RootState) => state.ship.selectedShip);
-    const selectedWeaponSlot = useSelector((state: RootState) => state.weaponSlots.selectedSlot);
+    const setSelectedShip = useStore((s: AppState) => s.setSelectedShip);
+    const setSelectedSlot = useStore((s: AppState) => s.setSelectedSlot);
+    const selectedShip = useStore((s: AppState) => s.selectedShip);
+    const selectedWeaponSlot = useStore((s: AppState) => s.selectedSlot);
+    const shipModel = useStore((s: AppState) => s.shipModel);
 
     return (<div>
-        <ShipSelector shipList={ships} onShipSelected={(ship) => dispatch(selectShip(ship))} />
+        <ShipSelector shipList={ships} onShipSelected={(ship) => setSelectedShip(ship)} />
         <ShipRefitterSection>
-            {selectedShip && <ShipRefitter ship={selectedShip} onSlotSelected={(slot) => dispatch(selectWeaponSlot(slot))} />}
+            {selectedShip && <ShipRefitter ship={selectedShip} onSlotSelected={(slot) => setSelectedSlot(slot)} />}
             {selectedWeaponSlot ? <WeaponSelector weaponList={weapons} weaponSlot={selectedWeaponSlot} /> : <WeaponSelector weaponList={weapons} />}
         </ShipRefitterSection>
         <ShipLoadout />
@@ -45,8 +46,4 @@ const App = () => {
 const root = ReactDOM.createRoot(
     document.getElementById('root')!
 );
-root.render(
-    <Provider store={store}>
-        <App />
-    </Provider >
-);
+root.render(<App />);
