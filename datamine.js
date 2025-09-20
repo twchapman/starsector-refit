@@ -36,7 +36,7 @@ const shipCsvData = csvParse.parse(shipCsv, {
     columns: true,
     skip_empty_lines: true
 });
-const shipFields = ["center", "height", "hullId", "hullName", "hullSize", "spriteName", "weaponSlots"];
+const shipFields = ["center", "height", "hullId", "hullName", "hullSize", "spriteName", "style", "weaponSlots"];
 const shipFilters = ["derelict_", "drone_", "module_", "platform", "remnant_", "station"];
 const shipCsvFieldKeys = [
     ["armor", "armor rating"],
@@ -71,6 +71,7 @@ const ships = shipList.map(shipFile => {
     const actualShipSprite = ship["spriteName"];
     ship["spriteName"] = ship["spriteName"].replace(/(graphics\/ships\/).+\/(.+\.png)/, "$1$2");
     fs.copyFileSync(path.join(gameCorePath, actualShipSprite), path.join(__dirname, ship["spriteName"]));
+    console.log(ship.hullName, ship.style);
     return ship;
 }).filter(s => s);
 console.log(`|> wrote ${ships.length} ships.`);
@@ -88,12 +89,12 @@ const weaponCsvData = csvParse.parse(weaponCsv, {
     skip_empty_lines: true
 });
 const weaponFields = ["hardpointSprite", "id", "size", "type"];
-const weaponFilters = ["blinker", "cryo", "interdictor", "lights", "rift", "tpc"];
+const weaponFilters = ["blinker", "cryo", "interdictor", "lights", "rift", "tpc", "targetinglaser", "_payload"];
 const weaponList = fs.readdirSync(path.join(dataDirPath, "weapons"));
 const weapons = weaponList.map(weaponFile => {
     if (!weaponFile.endsWith(".wpn")) return;
     for (let filter of weaponFilters) {
-        if (weaponFile.startsWith(filter)) return;
+        if (weaponFile.startsWith(filter) || weaponFile.endsWith(`${filter}.wpn`)) return;
     }
     const weaponJson = cleanedJson(fs.readFileSync(path.join(dataDirPath, "weapons", weaponFile), { encoding: "utf-8" }));
     let weaponData;
